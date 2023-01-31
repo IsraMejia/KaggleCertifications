@@ -1,0 +1,1 @@
+salu2 internautas coraszones mios xd, aqui ire subiendo mi codigo de las certificaciones de Kaggle
