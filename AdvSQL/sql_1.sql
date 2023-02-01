@@ -84,12 +84,17 @@ With this in mind, say you're interested in understanding users who joined the s
 You want to track their activity on the site: when did they post their first questions and answers, if ever?
 */
 
-SELECT q.owner_user_id AS owner_user_id,
+SELECT 
+    u.id,
     MIN(q.creation_date) AS q_creation_date, --question
     MIN(a.creation_date) AS a_creation_date  --answer
-FROM `bigquery-public-data.stackoverflow.posts_questions` AS q
+FROM `bigquery-public-data.stackoverflow.users`  as u
+    left join `bigquery-public-data.stackoverflow.posts_questions` AS q
+        ON  u.id = q.owner_user_id
+            AND q.creation_date >= '2019-01-01' 
     left join  `bigquery-public-data.stackoverflow.posts_answers` AS a
-ON q.owner_user_id = a.owner_user_id 
-WHERE q.creation_date >= '2019-01-01' --AND q.creation_date < '2019-02-01' 
-    AND a.creation_date >= '2019-01-01' --AND a.creation_date < '2019-02-01'
-GROUP BY owner_user_id
+        ON  u.id = a.owner_user_id            
+            AND a.creation_date >= '2019-01-01' 
+WHERE   
+    u.creation_date >= '2019-01-01' AND u.creation_date  <= '2019-02-01'    
+GROUP BY u.id 
