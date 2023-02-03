@@ -98,3 +98,27 @@ FROM `bigquery-public-data.stackoverflow.users`  as u
 WHERE   
     u.creation_date >= '2019-01-01' AND u.creation_date  <= '2019-02-01'    
 GROUP BY u.id 
+;
+
+
+-- 4) How many distinct users posted on January 1, 2019?
+
+with 
+    user_post as(
+        SELECT q.owner_user_id 
+        FROM `bigquery-public-data.stackoverflow.posts_questions` AS q
+        WHERE EXTRACT(DATE FROM q.creation_date) = '2019-01-01'
+    ),
+    user_answer as(
+        SELECT a.owner_user_id
+        FROM `bigquery-public-data.stackoverflow.posts_answers` AS a
+        WHERE EXTRACT(DATE FROM a.creation_date) = '2019-01-01'
+    )
+
+select owner_user_id from user_post
+union DISTINCT
+select owner_user_id from user_answer
+
+
+
+ 
